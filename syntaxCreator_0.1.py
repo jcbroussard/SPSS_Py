@@ -37,43 +37,50 @@ for i in range(len(varList)):
 variables = zip(varList, formatList, labelList)
 
 for var in variables:
-    
-    if ("A" not in var[1]) and ("Q" in str(var[0][1])):
+    varName = str(var[0][1])
+    varFormat = var[1]
+    varLabel = var[2]
+    if ("A" not in varFormat) and ("Q" in varName):
         # If the variable is not a string, do this:
-        outfile.write('Frequencies var = %s\n' % (var[0][1]))
+        outfile.write('Frequencies var = %s\n' % (varName))
         outfile.write('/Statistics=None.\n')
         outfile.write('GGraph\n')
-        outfile.write('/Graphdataset Name="graphdataset" Variables= %s Missing=Listwise ReportMissing=No\n' % (var[0][1]))
+        outfile.write('/Graphdataset Name="graphdataset" Variables= %s Missing=Listwise ReportMissing=No\n' % (varName))
         outfile.write('/Graphspec Source=Inline.\n')
         outfile.write('Begin GPL\n')
         outfile.write('SOURCE: s=userSource(id("graphdataset"))\n')
-        outfile.write('DATA: %s=col(source(s), name("%s"), unit.category())\n' % (var[0][1], var[0][1]))
-        outfile.write('GUIDE: axis(dim(1), label("%s"))\n' % (var[2]))
+        outfile.write('DATA: %s=col(source(s), name("%s"), unit.category())\n' % (varName, varName))
+        outfile.write('GUIDE: axis(dim(1), label("%s"))\n' % (varLabel))
         outfile.write('GUIDE: axis(dim(2), label("Percent"))\n')
         outfile.write('SCALE: cat(dim(1), include("0", "1"))\n')
         outfile.write('SCALE: linear(dim(2), include(0))\n')
-        outfile.write('ELEMENT: interval(position(summary.percent.count(%s)), shape.interior(shape.square))\n' % (var[0][1]))
+        outfile.write('ELEMENT: interval(position(summary.percent.count(%s)), shape.interior(shape.square))\n' % (varName))
         outfile.write('End GPL.\n')
         outfile.write('Title "".\n\n')
-    elif ("Q" in str(var[0][1])):
-        if (int(var[1][1:])<51):
+    elif ("Q" in varName):
+        varWidth = int(var[1][1:])
+        if (varWidth < 51):
             # If the variable has a 'Q' in it's name (meaning it's a question in the survey), then if it's a string
             # not longer than 30 characters, do this:
-            outfile.write('Frequencies var = %s\n' % (var[0][1]))
+            outfile.write('Frequencies var = %s\n' % (varName))
             outfile.write('/Statistics=None.\n')
             outfile.write('GGraph\n')
-            outfile.write('/Graphdataset Name="graphdataset" Variables= %s Missing=Listwise ReportMissing=No\n' % (var[0][1]))
+            outfile.write('/Graphdataset Name="graphdataset" Variables= %s Missing=Listwise ReportMissing=No\n' % (varName))
             outfile.write('/Graphspec Source=Inline.\n')
             outfile.write('Begin GPL\n')
             outfile.write('SOURCE: s=userSource(id("graphdataset"))\n')
-            outfile.write('DATA: %s=col(source(s), name("%s"), unit.category())\n' % (var[0][1], var[0][1]))
-            outfile.write('GUIDE: axis(dim(1), label("%s"))\n' % (var[2]))
+            outfile.write('DATA: %s=col(source(s), name("%s"), unit.category())\n' % (varName, varName))
+            outfile.write('GUIDE: axis(dim(1), label("%s"))\n' % (varLabel))
             outfile.write('GUIDE: axis(dim(2), label("Percent"))\n')
             outfile.write('SCALE: cat(dim(1), include("0", "1"))\n')
             outfile.write('SCALE: linear(dim(2), include(0))\n')
-            outfile.write('ELEMENT: interval(position(summary.percent.count(%s)), shape.interior(shape.square))\n' % (var[0][1]))
+            outfile.write('ELEMENT: interval(position(summary.percent.count(%s)), shape.interior(shape.square))\n' % (varName))
             outfile.write('End GPL.\n')
             outfile.write('Title "".\n\n')
+        ##else:
+            ## print out all open-ended responses in format of
+            ## Question Num:
+            ## responses...
 
 # Print out the export and formatting syntax to the .sps file
 outfile.write('Output Export\n')
